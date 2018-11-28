@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<!-- Template by quackit.com -->
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link href='//cdn.rawgit.com/young-ha/webfont-archive/master/css/Godo.css' rel='stylesheet' type = 'text/css'>
+	<title>ShoppingMall X.com</title>
+	
+	<style type="text/css">
+
+		/* Layout */
+		body {
+			min-width: 630px;
+		}
+
+
+		#container {
+			padding-left: 200px;
+			padding-right: 190px;
+			background: #CEF6E3; 
+		}
+		
+
+		#container .column {
+			position: relative;
+			float: left;
+		}
+		
+		#center {
+			padding: 10px 20px;
+			width: 100%;
+		}
+		
+		#left {
+			padding: 0 10px;
+			right: 240px;
+			margin-left: -100%;
+		}
+		
+		#footer {
+			clear: both;
+		}
+		
+		/* IE hack */
+		* html #left {
+			left: 150px;
+		}
+		
+		
+		/* Make the columns the same height as each other */
+		#container {
+			overflow: hidden;
+		}
+
+		
+		#container .column {
+			padding-bottom: 1001em;
+			margin-bottom: -1000em;
+		}
+		
+		/* Fix for the footer */
+		
+		* html body {
+			overflow: hidden;
+		}
+		
+		* html #footer-wrapper {
+			float: left;
+			position: relative;
+			width: 100%;
+			padding-bottom: 10010px;
+			margin-bottom: -10000px;
+			background: #fff;
+		}
+
+		/* Aesthetics */
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: 'Godo';
+			line-height: 1.5em;
+		}
+		
+		p {
+			color: #FFFFFF;
+			font-family:'Godo';
+		}
+
+		nav ul {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+		}
+		
+		nav ul a {
+			color: darkgreen;
+			text-decoration: none;
+		}
+
+		#header {
+			font-size: 20pt;
+			padding : 0.7em;
+			background: #0B243B;
+		}
+
+		#footer {
+			font-size: large;
+			padding: 0.3em;
+			background: #0B243B;
+		}
+
+		
+		#left {
+			background: #FFF;
+		}
+
+		#center {
+			background: #CEF6E3;
+		}
+	
+		#container .column {
+			padding-top: 1em;
+		}
+		
+		
+		/* menu bar */
+		.menubar{
+			border:none;
+			border:0px;
+			margin:0px;
+			padding:0px;
+			font: 67.5% "Lucida Sans Unicode", "Bitstream Vera Sans", "Trebuchet Unicode MS", "Lucida Grande", Verdana, Helvetica, sans-serif;
+			font-size:14px;
+			font-weight:bold;
+		}
+
+		.menubar ul{
+		background: rgb(109,109,109);
+		height:50px;
+		list-style:none;
+		margin:0;
+		padding:0;
+		}
+		
+		.menubar li{
+		float:left;
+		padding:0px;
+		}
+
+		.menubar li a{
+		background: rgb(109,109,109);
+		color:#cccccc;
+		display:block;
+		font-weight:normal;
+		line-height:50px;
+		margin:0px;
+		padding:0px 25px;
+		text-align:center;
+		text-decoration:none;
+		}
+		
+		.menubar li a:hover, .menubar ul li:hover a{
+		background: rgb(71,71,71);
+		color:#FFFFFF;
+		text-decoration:none;
+		}
+		
+		.menubar li ul{
+		background: rgb(109,109,109);
+		display:none; /* 평상시에는 드랍메뉴가 안보이게 하기 */
+		height:auto;
+		padding:0px;
+		margin:0px;
+		border:0px;
+		position:absolute;
+		width:200px;
+		z-index:200;
+		/*top:1em;
+		/*left:0;*/
+		}
+		
+		.menubar li:hover ul{
+		display:block; /* 마우스 커서 올리면 드랍메뉴 보이게 하기 */
+		}
+		
+		.menubar li li {
+		background: rgb(109,109,109);
+		display:block;
+		float:none;
+		margin:0px;
+		padding:0px;
+		width:200px;
+		}
+		
+		.menubar li:hover li a{
+		background:none;
+		}
+		
+		.menubar li ul a{
+		display:block;
+		height:50px;
+		font-size:12px;
+		font-style:normal;
+		margin:0px;
+		padding:0px 10px 0px 15px;
+		text-align:left;
+		}
+		
+		.menubar li ul a:hover, .menubar li ul li:hover a{
+		background: rgb(71,71,71);
+		border:0px;
+		color:#ffffff;
+		text-decoration:none;
+		}
+		
+		.menubar p{
+		clear:left;
+		}	
+	</style>
+	
+	<!--
+	<script type="text/javascript">
+		/* =============================
+		This script generates sample text for the body content. 
+		You can remove this script and any reference to it. 
+		 ============================= */
+		var bodyText=["The smaller your reality, the more convinced you are that you know everything.", "If the facts don't fit the theory, change the facts.", "The past has no power over the present moment.", "This, too, will pass.", "</p><p>You will not be punished for your anger, you will be punished by your anger.", "Peace comes from within. Do not seek it without.", "<h3>Heading</h3><p>The most important moment of your life is now. The most important person in your life is the one you are with now, and the most important activity in your life is the one you are involved with now."]
+		function generateText(sentenceCount){
+			for (var i=0; i<sentenceCount; i++)
+			document.write(bodyText[Math.floor(Math.random()*7)]+" ")
+		}
+	</script>	
+	-->
+</head>
+
+<body>
+	<header id="header"><p>  ShoppingMall_X</p></header>
+	
+	<div id=menu class="menubar">
+   <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#" id="current">Products</a>
+         <ul>
+           <li><a href="#">Sliders</a></li>
+           <li><a href="#">Galleries</a></li>
+           <li><a href="#">Apps</a></li>
+           <li><a href="#">Extensions</a></li>
+         </ul>
+      </li>
+      <li><a href="#">Event</a></li>
+      <li><a href="#">Login</a></li>
+   </ul>
+</div>
+
+	<div id="container">
+		
+		<nav id="center" class="column">
+			<article>
+				<h1>Today's recommendation!</h1>
+			</article>								
+		</nav>
+		
+		<nav id="left" class="column">
+			<article>
+			<h1><font color = "black">아무 사진이나 꾸밀거</font></h1>
+			</article>
+			
+		</nav>
+		
+	</div>
+
+	<div id="footer-wrapper">
+		<footer id="footer"><p align="center">ShoppingMall_X - KOREA</p>
+		<p align = "center"><font size = "3">copyright@Seunghye Jung & Jungsu Kim</font></p></footer>
+	</div>
+
+</body>
+
+</html>

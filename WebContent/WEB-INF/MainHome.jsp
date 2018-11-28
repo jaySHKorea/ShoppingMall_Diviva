@@ -6,11 +6,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="EUC-KR">
-<title>Test for mysql</title>
+<meta charset="UTF-8">
+<title>Insert title here</title>
 </head>
 <body>
-	<h2>Lab #9: Repeating Lab #5-3 via JSP</h2>
+<form action = "MainHome.html" method = "POST">
+</form>
 <%
 	String serverIP = "localhost";
 	String strSID = "ShoppingMall_X";
@@ -26,13 +27,10 @@
 	conn = DriverManager.getConnection(url,user,pass);
 	//transaction, lock 설정 
 	//String TransQuery = "SET TRANSACTION ";
-%>
-
-<h3> test result </h3>
-<%
-String query1 = "SELECT Name "+
-        "FROM ITEM "+
-        "WHERE Id = " + request.getParameter("project_name");
+	
+	String query1 = "SELECT Name "+
+        "FROM CATEGORY "+
+        "WHERE Id = ";
    
     pstmt1 = conn.prepareStatement(query1);
     rs1 = pstmt1.executeQuery();
