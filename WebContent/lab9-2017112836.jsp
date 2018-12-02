@@ -22,7 +22,7 @@
 	Connection conn;
 	PreparedStatement pstmt1;
 	ResultSet rs1,rs2,rs3;
-	Class.forName("com.mysql.jdbc.Driver");
+	Class.forName("com.mysql.cj.jdbc.Driver");
 	conn = DriverManager.getConnection(url,user,pass);
 	//transaction, lock ¼³Á¤ 
 	//String TransQuery = "SET TRANSACTION ";
@@ -30,9 +30,7 @@
 
 <h3> test result </h3>
 <%
-String query1 = "SELECT Name "+
-        "FROM ITEM "+
-        "WHERE Id = " + request.getParameter("project_name");
+String query1 = "SELECT DISTINCT Main_category FROM category";
    
     pstmt1 = conn.prepareStatement(query1);
     rs1 = pstmt1.executeQuery();
@@ -50,6 +48,6 @@ String query1 = "SELECT Name "+
 		out.println("</tr>");
 	}
 	out.println("</table>");
-	%>
+%>
 </body>
 </html>

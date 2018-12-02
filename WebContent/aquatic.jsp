@@ -4,9 +4,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Test2</title>
+<title>Insert title here</title>
 </head>
 <body>
-"test last"
+
 </body>
 </html>

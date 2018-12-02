@@ -1,0 +1,284 @@
+@CHARSET "UTF-8";
+/* Layout */
+		body {
+			min-width: 630px;
+		}
+
+		#container {
+			padding-left: 200px;
+			padding-right: 190px;
+			background: #CEF6E3; 
+		}
+		
+		#container .column {
+			position: relative;
+			float: left;
+		}
+		
+		#center {
+			padding: 10px 20px;
+			width: 100%;
+		}
+		
+		#left {
+			padding: 0 10px;
+			right: 240px;
+			margin-left: -100%;
+		}
+		
+		#footer {
+			clear: both;
+		}
+		
+		/* IE hack */
+		* html #left {
+			left: 150px;
+		}
+		
+		/* Make the columns the same height as each other */
+		#container {
+			overflow: hidden;
+		}
+		
+		#container .column {
+			padding-bottom: 1001em;
+			margin-bottom: -1000em;
+		}
+		
+		/* Fix for the footer */
+		
+		* html body {
+			overflow: hidden;
+		}
+		
+		* html #footer-wrapper {
+			float: left;
+			position: relative;
+			width: 100%;
+			padding-bottom: 10010px;
+			margin-bottom: -10000px;
+			background: #fff;
+		}
+
+		/* Aesthetics */
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: 'Godo';
+			line-height: 1.5em;
+		}
+		
+		p {
+			color: #FFFFFF;
+			font-family:'Godo';
+		}
+
+		nav ul {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+		}
+		
+		nav ul a {
+			color: darkgreen;
+			text-decoration: none;
+		}
+
+		#header {
+			font-size: 20pt;
+			padding : 0.7em;
+			background: #0B243B;
+		}
+
+		#footer {
+			font-size: large;
+			padding: 0.3em;
+			background: #0B243B;
+		}
+
+		#left {
+			background: #FFF;
+		}
+
+		#center {
+			background: #CEF6E3;
+		}
+	
+		#container .column {
+			padding-top: 1em;
+		}
+		
+		/* menu bar */
+		.menubar{
+			border:none;
+			border:0px;
+			margin:0px;
+			padding:0px;
+			font: 67.5% "Lucida Sans Unicode", "Bitstream Vera Sans", "Trebuchet Unicode MS", "Lucida Grande", Verdana, Helvetica, sans-serif;
+			font-size:14px;
+			font-weight:bold;
+		}
+
+		.menubar ul{
+		background: rgb(109,109,109);
+		height:50px;
+		list-style:none;
+		margin:0;
+		padding:0;
+		}
+		
+		.menubar li{
+		float:left;
+		padding:0px;
+		}
+
+		.menubar li a{
+		background: rgb(109,109,109);
+		color:#cccccc;
+		display:block;
+		font-weight:normal;
+		line-height:50px;
+		margin:0px;
+		padding:0px 25px;
+		text-align:center;
+		text-decoration:none;
+		}
+		
+		.menubar li a:hover, .menubar ul li:hover a{
+		background: rgb(71,71,71);
+		color:#FFFFFF;
+		text-decoration:none;
+		}
+		
+		.menubar li ul{
+		background: rgb(109,109,109);
+		display:none; /* 평상시에는 드랍메뉴가 안보이게 하기 */
+		height:auto;
+		padding:0px;
+		margin:0px;
+		border:0px;
+		position:absolute;
+		width:200px;
+		z-index:200;
+		/*top:1em;
+		/*left:0;*/
+		}
+		
+		.menubar li:hover ul{
+		display:block; /* 마우스 커서 올리면 드랍메뉴 보이게 하기 */
+		}
+		
+		.menubar li li {
+		background: rgb(109,109,109);
+		display:block;
+		float:none;
+		margin:0px;
+		padding:0px;
+		width:200px;
+		}
+		
+		.menubar li:hover li a{
+		background:none;
+		}
+		
+		.menubar li ul a{
+		display:block;
+		height:50px;
+		font-size:12px;
+		font-style:normal;
+		margin:0px;
+		padding:0px 10px 0px 15px;
+		text-align:left;
+		}
+		
+		.menubar li ul a:hover, .menubar li ul li:hover a{
+		background: rgb(71,71,71);
+		border:0px;
+		color:#ffffff;
+		text-decoration:none;
+		}
+		
+		.menubar p{
+		clear:left;
+		}	
+		
+		
+		
+		.category_name{
+		font-family: 'Godo';
+		font-size: 32px;
+		padding-top: 20px;
+		padding-bottom: 20px;
+		
+		
+		}
+		.item{
+		width: 200px;
+		height: 200px;
+		float: left;
+		margin: 10px;
+		}
+		.item_img{
+		height: 150px;
+		background-color: lightgray;
+		}
+		.item_content{
+		font-size: 18px;
+		text-align: center;
+		}
+		
+		.item_info{
+			display: flex;
+			width: 100%;
+			height: auto;
+			padding: 20px;
+			margin: 30px;
+			background-color: #FFFFFF;
+		}
+		.item_infoA{
+			flex: 1;
+			font-family: 'Godo';
+			font-size: 20px;
+			text-align: left;
+			
+		}
+		.item_info_img{
+			width: 200px;
+			height: 200px;
+		}
+		.item_infoB{
+			flex: 4;
+			height: auto;
+			font-size: 18px;
+			text-align: left;
+			padding-left: 20px;
+			padding-top: 20px;
+			border: 1px solid black;
+		}
+		
+		 .contain_box{
+            display: flex;
+            width: 100%;
+            height: 1000px;
+			padding-right: 190px;
+			background: #CEF6E3;
+        }
+        .sidenav{
+            flex: 1;
+            background-color: lightgray;
+            height: 1000px;
+        }
+        .sidecontent{
+            flex: 4;
+            height: 1000px;
+            padding-left: 100px;
+            padding-top: 50px;
+        }
+        .sidenav_menu{
+            width: 100%;
+            height: 50px;
+            padding-left: 20px;
+            padding-top: 20px;
+            font-size: 18px;
+        }
+		
