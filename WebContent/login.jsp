@@ -9,11 +9,11 @@
     </div>
     <div class="sidecontent">
         <h2>로그인</h2>
-        <form action="" method="post" style="padding-top: 20px; padding-left: 10px;">
+        <form action="login_to.jsp" method="post" style="padding-top: 20px; padding-left: 10px;">
             <label for="userid">아이디</label>
-            <input type="text" id="userid"/>
+            <input type="text" name="userid"/>
             <label for="password">비밀번호</label>
-            <input type="text" id="password"/>
+            <input type="password" name="password"/>
             <button type="button submit" class="btn btn-primary">로그인</button>
         </form>
     </div>

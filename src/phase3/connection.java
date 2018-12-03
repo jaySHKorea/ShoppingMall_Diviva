@@ -30,13 +30,14 @@ public class connection {
 	// 로그인할때 사용자가 존재하는지 확인 메소드
 	public boolean InUser(String Id, String password) {
 		PreparedStatement pstmt;
-		ResultSet rs;
-		String query1 = "SELECT Id, Password FROM CUSTOMER WHERE Id ='"+Id+ "' AND Password = '"+password+"'";
+		ResultSet rs = null;
+		String query1 = "SELECT Id,Password FROM CUSTOMER WHERE Id = '"+Id+ "' AND Password = '"+password+"'";
 		String i,p;
 		
 		try {
 			pstmt = conn.prepareStatement(query1);
 			rs = pstmt.executeQuery();
+			rs.next();
 			i = rs.getString(1);
 			p = rs.getString(2);
 		}catch(Exception e) {
@@ -45,7 +46,7 @@ public class connection {
 		}
 	    
 		if ( i.equals(Id) && p.equals(password)) {
-			if ( Id.equals("1004") && password.equals("admin")) {			
+			if ( Id.equals("admin") && password.equals("admin")) {			
 				DriverManager.println("관리자 계정 : 로그인 성공");
 			}
 			else {
@@ -61,26 +62,25 @@ public class connection {
 	
 	// 회원가입 화면정보로 DB에 회원 생성 
 	public boolean InsertUser(String Id, String Password, String Name, String Address, String Phone_num, String Sex, String Age, String Job) {
-		PreparedStatement pstmt;
+		PreparedStatement pstmt = null;
 		ResultSet rs;
-		String query1 = "SELECT Id FROM CUSTOMER WHERE Id = "+Id;
+		String query1 = "SELECT Id FROM CUSTOMER WHERE Id = '"+Id+"'";
 		String i;
 		
 		try {
 			pstmt = conn.prepareStatement(query1);
 			rs = pstmt.executeQuery();
+			rs.next();
 			i = rs.getString(1);
-		}catch(Exception e) {
-			e.printStackTrace();
-			return false;
+		}catch(SQLException e) {
+			i = null;
 		}
 		
 		if ( i == null) {
-			String query2 = "INSERT INTO CUSTOMER VALUES ("+Id+", '"+Password+"','"+Name+"'"
-					+ ",'"+Address+"',"+Phone_num+",'"+Sex+"',"+Age+",'"+Job+"')";
+			String query2 = "INSERT INTO CUSTOMER VALUES ('"+Id+"', '"+Password+"','"+Name+"'"
+					+ ",'"+Address+"','"+Phone_num+"','"+Sex+"',"+Age+",'"+Job+"',0)";
 			try {
-			pstmt = conn.prepareStatement(query2);
-			rs = pstmt.executeQuery();
+			pstmt.executeUpdate(query2);
 			conn.commit();
 			return true;
 			}catch(Exception e) {
@@ -93,26 +93,25 @@ public class connection {
 	
 	// ITEM 창에서 장바구니 추가 버튼을 눌렀을때 장바구니 정보 업데이트/ 혹은 인서트 메소드 
 	public boolean addItemOnItem(String Num, String Item_Id, String Custom_Id,String Retail_Name) {
-		PreparedStatement pstmt;
+		PreparedStatement pstmt = null;
 		ResultSet rs;
-		String query1 = "SELECT custom_id FROM SHOPPINGBAG WHERE custom_id = "+Custom_Id+" AND item_id ="+Item_Id+" AND Retail_Name ='"+Retail_Name+"'";
+		String query1 = "SELECT custom_id FROM SHOPPINGBAG WHERE custom_id = '"+Custom_Id+"' AND item_id ="+Item_Id+" AND Retail_Name ='"+Retail_Name+"'";
 		String i;
 		
 		try {
 			pstmt = conn.prepareStatement(query1);
 			rs = pstmt.executeQuery();
+			rs.next();
 			i = rs.getString(1);
-		}catch(Exception e) {
-			e.printStackTrace();
-			return false;
+		}catch(SQLException e) {
+			i = null;
 		}
 		
 		// 고객 쇼핑백에 해당 아이템이 존재하는 경우 -> 갯수만 증가 
 		if ( i != null) {
-			String query2 = "UPDATE SHOPPINGBAG SET Num = Num+1 WHERE item_id = "+Item_Id+" AND custom_id = "+Custom_Id+" AND Retail_Name = '"+Retail_Name+"'";
+			String query2 = "UPDATE SHOPPINGBAG SET Num = Num+1 WHERE item_id = "+Item_Id+" AND custom_id = '"+Custom_Id+"' AND Retail_Name = '"+Retail_Name+"'";
 			try {
-			pstmt = conn.prepareStatement(query2);
-			rs = pstmt.executeQuery();
+			pstmt.executeUpdate(query2);
 			conn.commit();
 			return true;
 			}catch(Exception e) {
@@ -121,10 +120,10 @@ public class connection {
 			}
 		}
 		else { // 고객 쇼핑백에 해당 아이템이 없는 경우
-			String query3 = "INSERT INTO SHOPPINGBAG VALUES ("+Num+", "+Item_Id+","+Custom_Id+",'"+Retail_Name+"')";
+			String query3 = "INSERT INTO SHOPPINGBAG VALUES ("+Num+", "+Item_Id+",'"+Custom_Id+"','"+Retail_Name+"')";
 			try {
-			PreparedStatement pstmt1 = conn.prepareStatement(query3);
-			ResultSet rs1 = pstmt1.executeQuery();
+			Statement pstmt1 = null;
+			pstmt1.executeUpdate(query3);
 			conn.commit();
 			return true;
 			}catch(Exception e) {
@@ -148,17 +147,15 @@ public class connection {
 			conn.setSavepoint(orderStart);
 			pstmt = conn.prepareStatement(query1);
 			rs = pstmt.executeQuery();
+			rs.next();
 			i = rs.getInt(1);
-			String query2 = "INSERT SHIPS INTO VALUES ("+Item_Id+","+Custom_Id+","+Num+","+(i+1)+",'N','"+formatType.format(today)+"','"+Retail_name+"')";
-			pstmt = conn.prepareStatement(query2);
-			rs = pstmt.executeQuery();
+			String query2 = "INSERT SHIPS INTO VALUES ("+Item_Id+",'"+Custom_Id+"',"+Num+","+(i+1)+",'N','"+formatType.format(today)+"','"+Retail_name+"')";
+			pstmt.executeUpdate(query2);
 			String query3 = "INSERT DELIVERY INTO VALUES ('"+Address+"','"+Name+"',"+Item_Id+","+(i+1)+",'"
 					+ Retail_name+"')";
-			pstmt = conn.prepareStatement(query3);
-			rs = pstmt.executeQuery();
+			pstmt.executeUpdate(query3);
 			String query4 = "UPDATE RETAILER SET order_count = order_count+1 WHERE Name = "+ Retail_name;
-			pstmt = conn.prepareStatement(query4);
-			rs = pstmt.executeQuery();
+			pstmt.executeUpdate(query4);
 			return true;
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -168,16 +165,15 @@ public class connection {
 	
 	// 구매가 완료되면 shoppingbag에 있는 현재 접속자가 담은 아이템을 삭제 , 고객정보의 order count 한개 상승 
 	public boolean delbag(String item_id, String Custom_Id,String Retail_Name) throws SQLException {
-		PreparedStatement pstmt;
+		PreparedStatement pstmt = null;
 		ResultSet rs;
-		String query1 = "DELETE FROM SHOPPINGBAG WHERE item_id = "+ item_id +" AND custom_id = "+Custom_Id+" AND retail_name = '"+Retail_Name+"'";
+		String query1 = "DELETE FROM SHOPPINGBAG WHERE item_id = "+ item_id +" AND custom_id = '"+Custom_Id+"' AND retail_name = '"+Retail_Name+"'";
 		
 		try {
-			pstmt = conn.prepareStatement(query1);
-			rs = pstmt.executeQuery();
-			String query2 = "UPDATE CUSTOMER SET order_count = order_count+1 WHERE id = "+Custom_Id;
-			pstmt = conn.prepareStatement(query2);
-			rs = pstmt.executeQuery();
+			pstmt.addBatch(query1);
+			pstmt.executeBatch();
+			String query2 = "UPDATE CUSTOMER SET order_count = order_count+1 WHERE id = '"+Custom_Id+"'";
+			pstmt.executeUpdate(query2);
 			return true;
 		}catch(Exception e) {
 			conn.rollback(orderStart);
@@ -188,12 +184,11 @@ public class connection {
 	
 	// 구매가 완료되면 특정 매장의 아이템의 재고를 감소시킴 
 	public boolean delstock(String Retail_name, String Item_id, String Num) throws SQLException {
-		PreparedStatement pstmt;
+		PreparedStatement pstmt = null;
 		ResultSet rs;
 		String query1 = "UPDATE STORED_IN SET Num = Num -"+ Num +" WHERE Retail_Name = '"+Retail_name+"' AND Item Id = "+Item_id;
 		try {
-			pstmt = conn.prepareStatement(query1);
-			rs = pstmt.executeQuery();
+			pstmt.executeUpdate(query1);
 			conn.commit();
 			return true;
 		}catch(Exception e) {
@@ -205,12 +200,11 @@ public class connection {
 	
 	// 재고관리 - 특정 매장의 아이템의 재고를 증가시킴 
 	public boolean addStock(String Retail_name, String Item_id, String Num) {
-		PreparedStatement pstmt;
+		PreparedStatement pstmt = null;
 		ResultSet rs;
 		String query1 = "UPDATE STORED_IN SET Num = Num +"+ Num +" WHERE Retail_Name = '"+Retail_name+"' AND Item Id = "+Item_id;
 		try {
-			pstmt = conn.prepareStatement(query1);
-			rs = pstmt.executeQuery();
+			pstmt.executeQuery(query1);
 			conn.commit();
 			return true;
 		}catch(Exception e) {
@@ -232,6 +226,7 @@ public class connection {
 			try {
 				pstmt = conn.prepareStatement(query1);
 				rs = pstmt.executeQuery();
+				rs.next();
 				result[0] = rs.getString(1);
 				return result;
 			}catch(Exception e) {
@@ -239,6 +234,7 @@ public class connection {
 			}
 		}
 		else if ( x.equals("m")) { // 모든 달의 매출 
+			String temp;
 			try {
 				for ( int i = 1 ; i <= 12 ; i++) {
 					String k = "0"+ Integer.toString(i);
@@ -247,7 +243,12 @@ public class connection {
 						+Retail_name+"' and order_date like '2018-"+k+"%'";	
 					pstmt = conn.prepareStatement(query1);
 					rs = pstmt.executeQuery();
-					String temp = rs.getString(1);
+					rs.next();
+					try {
+						temp = rs.getString(1);
+					}catch(SQLException e) {
+						temp = null;
+					}
 					if ( temp == null)
 						result[i-1] = "0";
 					else
@@ -263,6 +264,7 @@ public class connection {
 			String startO = "2018-"+x+"-01";
 			int smonth = Integer.parseInt(x);
 			int month = smonth;
+			String temp;
 			
 			try {
 				for ( int i = 0 ; month == smonth ; i++) {
@@ -270,7 +272,12 @@ public class connection {
 							+Retail_name+"' and order_date like '"+startO+"%'";;
 							pstmt = conn.prepareStatement(query1);
 							rs = pstmt.executeQuery();
-							String temp = rs.getString(1);
+							rs.next();
+							try {
+								temp = rs.getString(1);
+							}catch(SQLException e) {
+								temp = null;
+							}
 							if ( temp == null)
 								result[i] = "0";
 							else
@@ -299,6 +306,7 @@ public class connection {
 		try {
 			pstmt = conn.prepareStatement(query1);
 			rs = pstmt.executeQuery();
+			rs.next();
 			int order_count = rs.getInt(1);
 			return order_count;
 		}catch(Exception e) {
@@ -310,13 +318,12 @@ public class connection {
 	
 	// 로그인된 회원의 패스워드 설정 
 	public void setPasswd(String Id, String password) {
-		PreparedStatement pstmt;
+		PreparedStatement pstmt = null;
 		ResultSet rs;
 		String query1 = "UPDATE CUSTOMER SET Password='"+password+"' WHERE Id ='"+Id+"'";
 		
 		try {
-			pstmt = conn.prepareStatement(query1);
-			rs = pstmt.executeQuery();
+			pstmt.executeUpdate(query1);
 			DriverManager.println("비밀번호가 수되었습니다.");
 			conn.commit();
 		}catch(Exception e) {

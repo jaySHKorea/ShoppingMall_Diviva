@@ -65,7 +65,7 @@
      
       <li><a href="#">Event</a></li>
       <% 
-      if(newConec.IdentifyLogin() ==false)
+      if(session.getAttribute("id") == null)
       {
     	out.println("<li><a href=\"login.jsp\">로그인</a></li>");
     	out.println("<li><a href=\"register.jsp\">회원가입</a></li>");
