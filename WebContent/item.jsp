@@ -44,9 +44,9 @@ PRIMARY KEY (Id) -->
    		}
    		out.println("</div>");
    		out.println("<div style=\"flex: 3; \">");%>
-        <form action="insertBag.jsp?item=<%=request.getParameter("item")%>" method="post" style="padding-top: 20px; padding-left: 10px; margin-left: 10px;">
+        <form action="insertBag.jsp?item=<% out.println(rs_item.getString(1));%>>" method="post" style="padding-top: 20px; padding-left: 10px; margin-left: 10px;">
         <label for="ordernum">주문개수</label>
-        <input type="text" id="ordernum"/><br>
+        <input type="text" name="ordernum"/><br>
         <label for="retailer">주문매장</label>
             <select name="retailer">
             <%
@@ -58,7 +58,7 @@ PRIMARY KEY (Id) -->
             }
             %>
             </select><br><br>
-        <button type="button submit" class="btn btn-primary">장바구니에 넣기</button>
+        <button type="submit" class="btn btn-primary">장바구니에 넣기</button>
     	</form>
     	<% 
    		out.println("</div>");

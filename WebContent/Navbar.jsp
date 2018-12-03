@@ -72,6 +72,7 @@
       }
       else
       {
+      	out.println("<li><a href=\"bag.jsp\">장바구니</a></li>");
       	out.println("<li><a href=\"logout.jsp\">로그아웃</a></li>");
       }
     %>

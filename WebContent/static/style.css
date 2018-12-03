@@ -1,5 +1,8 @@
 @CHARSET "UTF-8";
 /* Layout */
+a{
+	text-decoration: none;
+}
 		body {
 			min-width: 630px;
 		}
@@ -8,6 +11,7 @@
 			padding-left: 200px;
 			padding-right: 190px;
 			background: #CEF6E3; 
+			min-height: 300px;
 		}
 		
 		#container .column {
@@ -281,4 +285,62 @@
             padding-top: 20px;
             font-size: 18px;
         }
+        
+        .btn2{
+            width: 120px;
+		    height: 30px;
+		    font-size: 21px;
+		    text-align: center;
+		    color: white;
+		    background-color: orange;
+		    padding-top: 15px;
+		    margin-left: auto;
+		    margin-right: auto;
+		    margin-top: 20px;
+		    padding-left: 20px;
+		    padding-right: 20px;
+		    padding-bottom: 10px;
+        }
+        .btn2 :hover{
+        background-color: lightgray;
+        }
+        
+        .bag{
+        width: 80%;
+        margin-left : auto;
+        margin-right: auto;
+        min-height: 300px;
+        margin: 30px;
+        background-color: white;
+        font-family: 'Godo';
+        padding-bottom: 20px;
+        }
+        .bag_content{
+        width: 97%;
+        text-align: left;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 20px;
+        min-height: 40px;
+        font-size: 15px;
+        display: flex;
+        }
+        .bag_item{
+        flex: 4;
+        height: 100%;
+        }
+        
+        .bag_content_rev{
+        flex: 2;
+        height: 100%;
+        }
+        
+        .bag_content_del{
+        flex: 1;
+        font-size: 10px;
+        color: lightgray;
+        height: 100%;
+        }
+        
+        
 		

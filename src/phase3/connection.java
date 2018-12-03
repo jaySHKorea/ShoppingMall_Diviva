@@ -94,6 +94,7 @@ public class connection {
 	// ITEM 창에서 장바구니 추가 버튼을 눌렀을때 장바구니 정보 업데이트/ 혹은 인서트 메소드 
 	public boolean addItemOnItem(String Num, String Item_Id, String Custom_Id,String Retail_Name) {
 		PreparedStatement pstmt = null;
+		Statement stmt;
 		ResultSet rs;
 		String query1 = "SELECT custom_id FROM SHOPPINGBAG WHERE custom_id = '"+Custom_Id+"' AND item_id ="+Item_Id+" AND Retail_Name ='"+Retail_Name+"'";
 		String i;
@@ -109,9 +110,10 @@ public class connection {
 		
 		// 고객 쇼핑백에 해당 아이템이 존재하는 경우 -> 갯수만 증가 
 		if ( i != null) {
-			String query2 = "UPDATE SHOPPINGBAG SET Num = Num+1 WHERE item_id = "+Item_Id+" AND custom_id = '"+Custom_Id+"' AND Retail_Name = '"+Retail_Name+"'";
+			String query2 = "UPDATE SHOPPINGBAG SET Num = Num+"+Num+" WHERE item_id = "+Item_Id+" AND custom_id = '"+Custom_Id+"' AND Retail_Name = '"+Retail_Name+"'";
 			try {
-			pstmt.executeUpdate(query2);
+			stmt = conn.createStatement();
+			stmt.executeUpdate(query2);
 			conn.commit();
 			return true;
 			}catch(Exception e) {
@@ -122,8 +124,7 @@ public class connection {
 		else { // 고객 쇼핑백에 해당 아이템이 없는 경우
 			String query3 = "INSERT INTO SHOPPINGBAG VALUES ("+Num+", "+Item_Id+",'"+Custom_Id+"','"+Retail_Name+"')";
 			try {
-			Statement pstmt1 = null;
-			pstmt1.executeUpdate(query3);
+			pstmt.executeUpdate(query3);
 			conn.commit();
 			return true;
 			}catch(Exception e) {
@@ -133,9 +134,34 @@ public class connection {
 		}
 	}
 	
-	// 구매버튼이 눌리고 완전히 완료되면 구매 정보가 ships와 delivery에 저장, retailer의 order count 한개 증가 
-	public boolean addship(String Item_Id,String Num,String Custom_Id,String Address, String Name, String Retail_name) {
+	// 장바구니창에서 개수 수정 버튼을 눌렀을때 장바구니 정보 업데이트
+		public boolean updateItemOnShoppingbag(String Num, String Item_Id, String Custom_Id,String Retail_Name) {
+			Statement stmt = null;
+			//ResultSet rs;
+			String query2;
+			int num = Integer.parseInt(Num);
+			if  (num < 0)
+				query2 = "UPDATE SHOPPINGBAG SET Num = Num"+Num+" WHERE item_id = "+Item_Id+" AND custom_id = '"+Custom_Id+"' AND Retail_Name = '"+Retail_Name+"'";
+			else
+				query2 = "UPDATE SHOPPINGBAG SET Num = Num+"+Num+" WHERE item_id = "+Item_Id+" AND custom_id = '"+Custom_Id+"' AND Retail_Name = '"+Retail_Name+"'";
+			
+			System.out.println(query2);
+			try {
+				stmt = conn.createStatement();
+				stmt.executeUpdate(query2);
+				conn.commit();
+				return true;
+			}catch(Exception e) {
+			e.printStackTrace();
+				return false;
+				
+			}
+		}
+	
+	// 구매버튼이 눌리고 완전히 완료되면 구매 정보가 ships와 delivery에 저장, retailer와 고객의 order count 한개 증가 
+	public boolean addship(String Item_Id,String Num,String Custom_Id,String Address, String Name, String Retail_name){
 		PreparedStatement pstmt;
+		Statement stmt;
 		ResultSet rs;
 		String query1 = "SELECT count(*) from ships";
 		Date today = new Date();
@@ -149,34 +175,45 @@ public class connection {
 			rs = pstmt.executeQuery();
 			rs.next();
 			i = rs.getInt(1);
-			String query2 = "INSERT SHIPS INTO VALUES ("+Item_Id+",'"+Custom_Id+"',"+Num+","+(i+1)+",'N','"+formatType.format(today)+"','"+Retail_name+"')";
+			String query2 = "INSERT INTO SHIPS VALUES ("+Item_Id+",'"+Custom_Id+"',"+Num+","+(i+1)+",'N','"+formatType.format(today)+"','"+Retail_name+"')";
 			pstmt.executeUpdate(query2);
-			String query3 = "INSERT DELIVERY INTO VALUES ('"+Address+"','"+Name+"',"+Item_Id+","+(i+1)+",'"
+			String query3 = "INSERT INTO DELIVERY VALUES ('"+Address+"','"+Name+"',"+Item_Id+","+(i+1)+",'"
 					+ Retail_name+"')";
 			pstmt.executeUpdate(query3);
-			String query4 = "UPDATE RETAILER SET order_count = order_count+1 WHERE Name = "+ Retail_name;
-			pstmt.executeUpdate(query4);
+			stmt = conn.createStatement();
+			String query4 = "UPDATE RETAILER SET order_count = order_count+1 WHERE Name = '"+ Retail_name+"'";
+			stmt.executeUpdate(query4);
+			String query5 = "UPDATE CUSTOMER SET order_count = order_count+1 WHERE id = '"+Custom_Id+"'";
+			stmt.executeUpdate(query5);
+			conn.commit();
 			return true;
 		}catch(Exception e) {
+			try {
+			conn.rollback();}
+			catch(Exception e2) {
+				e.printStackTrace();
+			}
 			e.printStackTrace();
 			return false;
 		}
 	}
 	
-	// 구매가 완료되면 shoppingbag에 있는 현재 접속자가 담은 아이템을 삭제 , 고객정보의 order count 한개 상승 
+	// 구매가 완료되면 shoppingbag에 있는 현재 접속자가 담은 아이템을 삭제
 	public boolean delbag(String item_id, String Custom_Id,String Retail_Name) throws SQLException {
-		PreparedStatement pstmt = null;
-		ResultSet rs;
+		Statement stmt = conn.createStatement();
+		//ResultSet rs;
 		String query1 = "DELETE FROM SHOPPINGBAG WHERE item_id = "+ item_id +" AND custom_id = '"+Custom_Id+"' AND retail_name = '"+Retail_Name+"'";
-		
+	
+		stmt.addBatch(query1);
 		try {
-			pstmt.addBatch(query1);
-			pstmt.executeBatch();
-			String query2 = "UPDATE CUSTOMER SET order_count = order_count+1 WHERE id = '"+Custom_Id+"'";
-			pstmt.executeUpdate(query2);
+			stmt.executeBatch();
+			stmt.executeUpdate(query1);
+			conn.commit();
+			//System.out.println("정보를 지웠음");
 			return true;
 		}catch(Exception e) {
-			conn.rollback(orderStart);
+			if ( orderStart != null)
+				conn.rollback(orderStart);
 			e.printStackTrace();
 			return false;
 		}
@@ -184,15 +221,24 @@ public class connection {
 	
 	// 구매가 완료되면 특정 매장의 아이템의 재고를 감소시킴 
 	public boolean delstock(String Retail_name, String Item_id, String Num) throws SQLException {
+		Statement stmt = null;
 		PreparedStatement pstmt = null;
-		ResultSet rs;
-		String query1 = "UPDATE STORED_IN SET Num = Num -"+ Num +" WHERE Retail_Name = '"+Retail_name+"' AND Item Id = "+Item_id;
+		ResultSet rs = null;
+		String query1 = "UPDATE STORED_IN SET Num = Num-"+ Num +" WHERE Retail_Name = '"+Retail_name+"' AND Item_Id = "+Item_id;
+		String query2 = "SELECT Num FROM STORED_IN WHERE Retail_Name = '"+Retail_name+"' AND Item_Id = "+Item_id;
 		try {
-			pstmt.executeUpdate(query1);
+			pstmt = conn.prepareStatement(query2);
+			rs = pstmt.executeQuery();
+			rs.next();
+			int num = rs.getInt(1);
+			if ( num < Integer.parseInt(Num)) new Exception();
+			stmt = conn.createStatement();
+			stmt.executeUpdate(query1);
 			conn.commit();
 			return true;
 		}catch(Exception e) {
-			conn.rollback(orderStart);
+			if ( orderStart != null)
+				conn.rollback(orderStart);
 			e.printStackTrace();
 			return false;
 		}
@@ -200,11 +246,12 @@ public class connection {
 	
 	// 재고관리 - 특정 매장의 아이템의 재고를 증가시킴 
 	public boolean addStock(String Retail_name, String Item_id, String Num) {
-		PreparedStatement pstmt = null;
-		ResultSet rs;
+		Statement stmt = null;
+		//ResultSet rs;
 		String query1 = "UPDATE STORED_IN SET Num = Num +"+ Num +" WHERE Retail_Name = '"+Retail_name+"' AND Item Id = "+Item_id;
 		try {
-			pstmt.executeQuery(query1);
+			stmt = conn.createStatement();
+			stmt.executeQuery(query1);
 			conn.commit();
 			return true;
 		}catch(Exception e) {
@@ -218,8 +265,8 @@ public class connection {
 		PreparedStatement pstmt;
 		ResultSet rs;
 		String[] result = null;
-		Date today = new Date();
-		SimpleDateFormat formatType = new SimpleDateFormat("yyyy-mm-dd");
+		//Date today = new Date();
+		//SimpleDateFormat formatType = new SimpleDateFormat("yyyy-mm-dd");
 		
 		if ( x.equals("y")) { // 전체 매출 
 			String query1 = "select sum(price*num) from ships,item where ships.item_id = item.id and ships.retail_name = '"+Retail_name+"'";
@@ -260,7 +307,7 @@ public class connection {
 			}
 		}else { // 일별 매출 반환
 			if ( Integer.parseInt(x) < 10) x = "0"+x;
-			Date start = null;
+			//Date start = null;
 			String startO = "2018-"+x+"-01";
 			int smonth = Integer.parseInt(x);
 			int month = smonth;
@@ -318,12 +365,13 @@ public class connection {
 	
 	// 로그인된 회원의 패스워드 설정 
 	public void setPasswd(String Id, String password) {
-		PreparedStatement pstmt = null;
-		ResultSet rs;
+		Statement stmt = null;
+		//ResultSet rs;
 		String query1 = "UPDATE CUSTOMER SET Password='"+password+"' WHERE Id ='"+Id+"'";
 		
 		try {
-			pstmt.executeUpdate(query1);
+			stmt = conn.createStatement();
+			stmt.executeUpdate(query1);
 			DriverManager.println("비밀번호가 수되었습니다.");
 			conn.commit();
 		}catch(Exception e) {
