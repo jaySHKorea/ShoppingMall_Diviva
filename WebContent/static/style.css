@@ -1,8 +1,8 @@
 @CHARSET "UTF-8";
 /* Layout */
-a{
-	text-decoration: none;
-}
+	a{
+		text-decoration: none;
+	}
 		body {
 			min-width: 630px;
 		}
@@ -260,23 +260,24 @@ a{
 			border: 1px solid black;
 		}
 		
-		 .contain_box{
+		.contain_box{
             display: flex;
             width: 100%;
-            height: 1000px;
+            min-height: 300px;
 			padding-right: 190px;
 			background: #CEF6E3;
         }
         .sidenav{
             flex: 1;
             background-color: lightgray;
-            height: 1000px;
+            min-height: 300px;
         }
         .sidecontent{
             flex: 4;
-            height: 1000px;
+            min-height: 400px;
             padding-left: 100px;
             padding-top: 50px;
+            padding-bottom: 50px;
         }
         .sidenav_menu{
             width: 100%;
@@ -300,6 +301,7 @@ a{
 		    padding-left: 20px;
 		    padding-right: 20px;
 		    padding-bottom: 10px;
+		    font-family: 'Godo';
         }
         .btn2 :hover{
         background-color: lightgray;
@@ -309,7 +311,7 @@ a{
         width: 80%;
         margin-left : auto;
         margin-right: auto;
-        min-height: 300px;
+        min-height:300px;
         margin: 30px;
         background-color: white;
         font-family: 'Godo';
@@ -342,5 +344,75 @@ a{
         height: 100%;
         }
         
+        #search {
+        height : 40px;
+        width : 100px;
+        display: inline;
+        }
         
+        #search input{
+        font-size:13px;
+        aligh : center;
+        height: 20px;
+        width:100px;
+        margin-top: 10px;
+        padding-left: 5px;
+        outline : none;
+        }
+        
+        #search button{
+        width:50px;
+        height:30px;
+        border:0px;
+        margin-top: 8px;
+        margin-left: 5px;
+        background:#0A122A;
+        outline : none;
+        float:right;
+        color:#ffffff
+        }
 		
+		.newcome{
+		width: 100%;
+		height: 200px;
+		display: flex;
+		}
+		
+		.newcomeA{
+		flex: 1;
+		display: block;
+	
+		}
+		.newcomeA_1{
+		width: 100%;
+		height: 160px;
+		background-color: gold;
+		padding: 20px;
+		font-size: 24px;
+		line-height: 1.5;
+		font-family: 'Godo';
+		}
+		.newcomeA_2{
+		width: 100%;
+		height: 100px;
+		background-color: orange;
+		}
+		
+		.newcomeB{
+		flex: 4;
+		height: 200px;
+		}
+		.newcomeB a{
+				float: left;
+		}
+		.newcomeB h3{
+		position :relative;
+		bottom: 130px;
+		left: 30px;
+		text-decoration: none;
+		color: #CEF6E3;
+		
+		}
+		.newcomeB a :hover{
+		filter: brightness(50%);
+		}

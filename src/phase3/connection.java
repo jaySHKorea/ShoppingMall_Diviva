@@ -76,7 +76,7 @@ public class connection {
 			i = null;
 		}
 		
-		if ( i == null) {
+		if ( i == null) { // 중복 아이디가 없으면 
 			String query2 = "INSERT INTO CUSTOMER VALUES ('"+Id+"', '"+Password+"','"+Name+"'"
 					+ ",'"+Address+"','"+Phone_num+"','"+Sex+"',"+Age+",'"+Job+"',0)";
 			try {
@@ -90,6 +90,24 @@ public class connection {
 		}
 		return false;
 	}
+	
+	// 유저 회원 정보 수정 
+		public boolean UpdateUser(String Id,String Name, String Address, String Phone_num, String Sex, String Age, String Job) {
+			Statement stmt = null;
+			//ResultSet rs;
+			
+			String query2 = "UPDATE CUSTOMER SET Name = '"+Name+"' AND Address = '"+Address+"' AND Phone_num = '"
+								+Phone_num+"' AND Sex = '"+Sex+"' AND Age = "+Age+" AND Job = '"+Job+"' Where Id = '"+Id+"'";
+			try {
+				stmt = conn.createStatement();
+				stmt.executeUpdate(query2);
+				conn.commit();
+				return true;
+			}catch(Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
 	
 	// ITEM 창에서 장바구니 추가 버튼을 눌렀을때 장바구니 정보 업데이트/ 혹은 인서트 메소드 
 	public boolean addItemOnItem(String Num, String Item_Id, String Custom_Id,String Retail_Name) {
@@ -137,9 +155,12 @@ public class connection {
 	// 장바구니창에서 개수 수정 버튼을 눌렀을때 장바구니 정보 업데이트
 		public boolean updateItemOnShoppingbag(String Num, String Item_Id, String Custom_Id,String Retail_Name) {
 			Statement stmt = null;
+			int num;
 			//ResultSet rs;
 			String query2;
-			int num = Integer.parseInt(Num);
+			if (Num.equals("")) num = 0;
+			else num = Integer.parseInt(Num);
+			
 			if  (num < 0)
 				query2 = "UPDATE SHOPPINGBAG SET Num = Num"+Num+" WHERE item_id = "+Item_Id+" AND custom_id = '"+Custom_Id+"' AND Retail_Name = '"+Retail_Name+"'";
 			else
@@ -165,9 +186,23 @@ public class connection {
 		ResultSet rs;
 		String query1 = "SELECT count(*) from ships";
 		Date today = new Date();
-		SimpleDateFormat formatType = new SimpleDateFormat("yyyy-mm-dd");
+		SimpleDateFormat formatType = new SimpleDateFormat("yyyy-MM-dd");
 		int i;
 		String orderStart = "orderStart";
+		String query = "SELECT Num FROM STORED_IN WHERE Retail_Name = '"+Retail_name+"' AND Item_Id = "+Item_Id;
+		
+		try {
+		pstmt = conn.prepareStatement(query);
+		rs = pstmt.executeQuery();
+		rs.next();
+		int num = rs.getInt(1);
+		System.out.println("현재 재고 :"+num);
+		System.out.println("구매할 갯수 : "+Num);
+		if ( num < Integer.parseInt(Num))
+			return false;
+		}catch(Exception e) {
+			return false;
+		}
 		
 		try {
 			conn.setSavepoint(orderStart);
@@ -189,7 +224,7 @@ public class connection {
 			return true;
 		}catch(Exception e) {
 			try {
-			conn.rollback();}
+				conn.rollback();}
 			catch(Exception e2) {
 				e.printStackTrace();
 			}
@@ -219,19 +254,15 @@ public class connection {
 		}
 	}
 	
+	// 트랜잭션을 애초에 addship에서 체크하고 날려버리기 
 	// 구매가 완료되면 특정 매장의 아이템의 재고를 감소시킴 
 	public boolean delstock(String Retail_name, String Item_id, String Num) throws SQLException {
 		Statement stmt = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
+		//PreparedStatement pstmt = null;
+		//ResultSet rs = null;
 		String query1 = "UPDATE STORED_IN SET Num = Num-"+ Num +" WHERE Retail_Name = '"+Retail_name+"' AND Item_Id = "+Item_id;
-		String query2 = "SELECT Num FROM STORED_IN WHERE Retail_Name = '"+Retail_name+"' AND Item_Id = "+Item_id;
+		
 		try {
-			pstmt = conn.prepareStatement(query2);
-			rs = pstmt.executeQuery();
-			rs.next();
-			int num = rs.getInt(1);
-			if ( num < Integer.parseInt(Num)) new Exception();
 			stmt = conn.createStatement();
 			stmt.executeUpdate(query1);
 			conn.commit();
@@ -248,10 +279,10 @@ public class connection {
 	public boolean addStock(String Retail_name, String Item_id, String Num) {
 		Statement stmt = null;
 		//ResultSet rs;
-		String query1 = "UPDATE STORED_IN SET Num = Num +"+ Num +" WHERE Retail_Name = '"+Retail_name+"' AND Item Id = "+Item_id;
+		String query1 = "UPDATE STORED_IN SET Num = Num +"+ Num +" WHERE Retail_Name = '"+Retail_name+"' AND Item_Id = "+Item_id;
 		try {
 			stmt = conn.createStatement();
-			stmt.executeQuery(query1);
+			stmt.executeUpdate(query1);
 			conn.commit();
 			return true;
 		}catch(Exception e) {
@@ -261,80 +292,101 @@ public class connection {
 	}
 	
 	// 관리자 통계 화면 파라미터 x가 ‘y’면  해당 retail_name의 전체 매출, ‘m’이면 모든달의 매출,  그 외의 값이면(else) x월의 일별 매출 반환
-	public String[] sell(String Retail_name, String x) {
+	public String[] sell(String x) {
 		PreparedStatement pstmt;
 		ResultSet rs;
-		String[] result = null;
+		String[] result = new String[31];
 		//Date today = new Date();
 		//SimpleDateFormat formatType = new SimpleDateFormat("yyyy-mm-dd");
 		
 		if ( x.equals("y")) { // 전체 매출 
-			String query1 = "select sum(price*num) from ships,item where ships.item_id = item.id and ships.retail_name = '"+Retail_name+"'";
+			String query1 = "select sum(price*num) from ships,item where ships.item_id = item.id";
 			try {
 				pstmt = conn.prepareStatement(query1);
 				rs = pstmt.executeQuery();
 				rs.next();
-				result[0] = rs.getString(1);
+				int num = rs.getInt(1);
+				result[0] = Integer.toString(num);
+				System.out.println("전체: "+result[0]);
 				return result;
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
 		}
 		else if ( x.equals("m")) { // 모든 달의 매출 
-			String temp;
+			int temp;
 			try {
 				for ( int i = 1 ; i <= 12 ; i++) {
 					String k = "0"+ Integer.toString(i);
 					if ( i >= 10 ) k = Integer.toString(i);
-					String query1 = "select sum(price*num) from ships,item where ships.item_id = item.id and ships.retail_name = '"
-						+Retail_name+"' and order_date like '2018-"+k+"%'";	
+					String query1 = "select sum(price*num) from ships,item where ships.item_id = item.id and order_date like '2018-"+k+"%'";	
 					pstmt = conn.prepareStatement(query1);
 					rs = pstmt.executeQuery();
 					rs.next();
 					try {
-						temp = rs.getString(1);
+						temp = rs.getInt(1);
 					}catch(SQLException e) {
-						temp = null;
+						temp = -1;
 					}
-					if ( temp == null)
+					if ( temp == -1)
 						result[i-1] = "0";
 					else
-						result[i-1] = temp;
+						result[i-1] = Integer.toString(temp);
 				}
 				return result;
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
 		}else { // 일별 매출 반환
-			if ( Integer.parseInt(x) < 10) x = "0"+x;
-			//Date start = null;
-			String startO = "2018-"+x+"-01";
+			x = x.substring(0, x.length()-2);
 			int smonth = Integer.parseInt(x);
-			int month = smonth;
-			String temp;
+			System.out.println("smonth: "+x);
+			if ( Integer.parseInt(x) < 10) x = "0"+x;
+			//Date start = new Date();
+			String startO = "2018-"+x+"-01";
+			//String startX = "2018 "+x+" 01";
+			int temp;
+			
+			Calendar calendar = Calendar.getInstance();
+
+			int year = 2018;
+			int month = smonth-1;
+			calendar.set(year, month, 1);
+			
+			int DayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
 			
 			try {
-				for ( int i = 0 ; month == smonth ; i++) {
-					String query1 = "select sum(price*num) from ships,item where ships.item_id = item.id and ships.retail_name = '"
-							+Retail_name+"' and order_date like '"+startO+"%'";;
+				for ( int i = 1 ; i <= DayOfMonth  ; i++) {
+					
+					System.out.println(startO);
+					String query1 = "select sum(price*num) from ships,item where ships.item_id = item.id and order_date = '"+startO+"'";;
 							pstmt = conn.prepareStatement(query1);
 							rs = pstmt.executeQuery();
 							rs.next();
 							try {
-								temp = rs.getString(1);
+								temp = rs.getInt(1);
 							}catch(SQLException e) {
-								temp = null;
+								temp = -1;
 							}
-							if ( temp == null)
-								result[i] = "0";
+							if ( temp == -1)
+								result[i-1] = "0";
 							else
-								result[i] = temp;
-							SimpleDateFormat dateDisplay = new SimpleDateFormat("yyyy-mm-dd");
+								result[i-1] = Integer.toString(temp);
+						
+							SimpleDateFormat dateDisplay = new SimpleDateFormat("yyyy-MM-dd");
+							calendar.add(Calendar.DATE, 1);
+							startO = dateDisplay.format(calendar.getTime());
+						/*
+							SimpleDateFormat dateDisplay = new SimpleDateFormat("yyyy MM dd");
 							Calendar c = Calendar.getInstance();
-							c.setTime(dateDisplay.parse(startO));
-							c.add(Calendar.DATE, 1);
-							startO = dateDisplay.format(c.getTime());
-							month = c.get(Calendar.MONTH);
+							c.setTime(dateDisplay.parse(startX));
+							
+							startX = dateDisplay.format(c.getTime());
+							month = c.MONTH;;
+							System.out.println("c.");
+							*/
+							
 				}
 				return result;
 			}catch(Exception e) {
